@@ -1,0 +1,60 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Contracts.Desktop.Controls"
+                    xmlns:vm="clr-namespace:Contracts.Desktop.ContractManagement">
+  <BooleanToVisibilityConverter x:Key="ContractBooleanToVisibility"/>
+  <Style x:Key="EmptyWhenNoRows" TargetType="controls:EmptyState">
+    <Setter Property="Visibility" Value="Visible"/>
+    <Style.Triggers><DataTrigger Binding="{Binding}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers>
+  </Style>
+  <DataTemplate DataType="{x:Type vm:ContractPageViewModel}">
+    <controls:LoadingOverlay IsLoading="{Binding IsBusy}">
+      <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
+        <controls:PageHeader Header="قراردادها" Content="مدیریت قرارداد، ارزش نهایی و سوابق وابسته"/>
+        <controls:ErrorBanner Grid.Row="1" Content="{Binding ErrorMessage}" Visibility="{Binding HasError, Converter={StaticResource ContractBooleanToVisibility}}" Margin="0,0,0,8"/>
+        <controls:FilterPanel Grid.Row="2" Margin="0,0,0,10"><WrapPanel>
+          <controls:FormField Header="شماره/عنوان"><controls:SearchBox Width="180" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"/></controls:FormField>
+          <controls:FormField Header="نوع"><ComboBox Width="130" ItemsSource="{Binding Types}" DisplayMemberPath="TitleFa" SelectedValuePath="Id" SelectedValue="{Binding FilterTypeId}"/></controls:FormField>
+          <controls:FormField Header="وضعیت"><ComboBox Width="130" ItemsSource="{Binding Statuses}" DisplayMemberPath="TitleFa" SelectedValuePath="Id" SelectedValue="{Binding FilterStatusId}"/></controls:FormField>
+          <controls:FormField Header="طرف"><ComboBox Width="160" ItemsSource="{Binding Parties}" DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding FilterPartyId}" IsTextSearchEnabled="True"/></controls:FormField>
+          <controls:FormField Header="پروژه"><ComboBox Width="160" ItemsSource="{Binding Projects}" DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding FilterProjectId}"/></controls:FormField>
+          <controls:FormField Header="پایان از"><controls:PersianDatePicker Width="140" Text="{Binding EndFrom}"/></controls:FormField>
+          <controls:FormField Header="تا"><controls:PersianDatePicker Width="140" Text="{Binding EndTo}"/></controls:FormField>
+          <controls:FormField Header="مرتب‌سازی"><ComboBox Width="110" ItemsSource="{Binding SortOptions}" DisplayMemberPath="Title" SelectedValuePath="Code" SelectedValue="{Binding Sort}"/></controls:FormField>
+          <CheckBox Content="نزولی" IsChecked="{Binding Descending}" VerticalAlignment="Center" Margin="4"/><Button Content="جستجو" Command="{Binding SearchCommand}" AutomationProperties.Name="اجرای فیلتر قراردادها"/><Button Content="پاک‌کردن فیلتر" Command="{Binding ClearFiltersCommand}"/>
+        </WrapPanel></controls:FilterPanel>
+        <Grid Grid.Row="3"><Grid.ColumnDefinitions><ColumnDefinition Width="5*"/><ColumnDefinition Width="6*"/></Grid.ColumnDefinitions>
+          <DockPanel Margin="0,0,12,0">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"><Button Content="بازکردن" Command="{Binding OpenCommand}"/><Button Content="قبلی صفحه" Command="{Binding PreviousPageCommand}"/><Button Content="بعدی صفحه" Command="{Binding NextPageCommand}"/><TextBlock VerticalAlignment="Center" Text="{Binding Page, StringFormat=صفحه {0}}" Margin="8,0"/><TextBlock VerticalAlignment="Center" Text="{Binding TotalCount, StringFormat=از {0} رکورد}"/></StackPanel>
+            <DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}" IsReadOnly="True" AutoGenerateColumns="False" AutomationProperties.Name="فهرست قراردادها">
+              <DataGrid.Columns><DataGridTextColumn Header="شماره" Binding="{Binding ContractNo}" Width="100"/><DataGridTextColumn Header="عنوان" Binding="{Binding Title}" Width="160"/><DataGridTextColumn Header="نوع" Binding="{Binding TypeTitle}" Width="90"/><DataGridTextColumn Header="دسته" Binding="{Binding CategoryTitle}" Width="90"/><DataGridTextColumn Header="طرف" Binding="{Binding PartyName}" Width="130"/><DataGridTextColumn Header="پروژه" Binding="{Binding ProjectName}" Width="130"/><DataGridTextColumn Header="مبلغ پایه (ریال)" Binding="{Binding BaseAmountRial, StringFormat=N0}" Width="120"/><DataGridTextColumn Header="مبلغ نهایی (ریال)" Binding="{Binding FinalAmountRial, StringFormat=N0}" Width="125"/><DataGridTextColumn Header="وضعیت" Binding="{Binding StatusTitle}" Width="90"/><DataGridTextColumn Header="پایان" Binding="{Binding EndDate}" Width="95"/></DataGrid.Columns>
+            </DataGrid>
+          </DockPanel>
+          <DockPanel Grid.Column="1">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"><Button Content="جدید" Command="{Binding NewCommand}"/><Button Content="ذخیره" Command="{Binding SaveCommand}"/><Button Content="حذف" Command="{Binding DeleteCommand}"/><controls:RecordNavigator PreviousCommand="{Binding PreviousCommand}" NextCommand="{Binding NextCommand}"/></StackPanel>
+            <TabControl>
+              <TabItem Header="اطلاعات اصلی"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+                <UniformGrid Columns="2"><controls:FormField Header="شماره قرارداد"><TextBox Text="{Binding ContractNo, UpdateSourceTrigger=PropertyChanged}"/></controls:FormField><controls:FormField Header="عنوان"><TextBox Text="{Binding ContractTitle}"/></controls:FormField>
+                  <controls:FormField Header="نوع"><ComboBox ItemsSource="{Binding Types}" DisplayMemberPath="TitleFa" SelectedValuePath="Id" SelectedValue="{Binding TypeId}"/></controls:FormField><controls:FormField Header="دسته‌بندی"><ComboBox ItemsSource="{Binding Categories}" DisplayMemberPath="TitleFa" SelectedValuePath="Id" SelectedValue="{Binding CategoryId}"/></controls:FormField>
+                  <controls:FormField Header="طرف قرارداد"><ComboBox ItemsSource="{Binding Parties}" DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding PartyId}" IsTextSearchEnabled="True"/></controls:FormField><controls:FormField Header="پروژه"><ComboBox ItemsSource="{Binding Projects}" DisplayMemberPath="Title" SelectedValuePath="Id" SelectedValue="{Binding ProjectId}"/></controls:FormField>
+                  <controls:FormField Header="وضعیت"><ComboBox ItemsSource="{Binding Statuses}" DisplayMemberPath="TitleFa" SelectedValuePath="Id" SelectedValue="{Binding StatusId}"/></controls:FormField><controls:FormField Header="مدیر (شناسه کاربر)"><TextBox Text="{Binding ManagerUserId}"/></controls:FormField>
+                  <controls:FormField Header="تاریخ شروع شمسی"><controls:PersianDatePicker Text="{Binding StartDate}"/></controls:FormField><controls:FormField Header="تاریخ پایان شمسی"><controls:PersianDatePicker Text="{Binding EndDate}"/></controls:FormField>
+                  <controls:FormField Header="ارز"><ComboBox ItemsSource="{Binding Currencies}" DisplayMemberPath="Code" SelectedValuePath="Id" SelectedValue="{Binding CurrencyId}"/></controls:FormField><controls:FormField Header="مبلغ اصلی/جزء ارز"><controls:MoneyField Text="{Binding OriginalAmountMinor}"/></controls:FormField>
+                  <controls:FormField Header="نرخ ریال برای هر واحد"><controls:MoneyField Text="{Binding ExchangeRateRialPerUnit}" IsEnabled="{Binding IsForeignCurrency}"/></controls:FormField><controls:FormField Header="ایجادکننده (فقط خواندنی)"><TextBox Text="{Binding CreatedBy,Mode=OneWay}" IsReadOnly="True"/></controls:FormField></UniformGrid>
+                <controls:FormField Header="شرح"><TextBox Text="{Binding Description}" AcceptsReturn="True" MinHeight="70"/></controls:FormField>
+              </StackPanel></ScrollViewer></TabItem>
+              <TabItem Header="مالی"><StackPanel Margin="12"><TextBlock Text="مبلغ پایه ریال" FontWeight="SemiBold"/><TextBlock Text="{Binding BaseAmountDisplay}" FontSize="18"/><TextBlock Text="مبلغ نهایی ریال" FontWeight="SemiBold" Margin="0,12,0,0"/><TextBlock Text="{Binding FinalAmountDisplay}" FontSize="18"/><TextBlock Text="{Binding DurationDays, StringFormat=مدت پایه قرارداد: {0} روز}" Margin="0,12,0,0"/><TextBlock Text="{Binding EffectiveEndDate, StringFormat=پایان مؤثر با الحاقیه‌ها: {0}}"/><controls:EmptyState Content="{Binding FinancialSummaryMessage}" Margin="0,18,0,0"/></StackPanel></TabItem>
+              <TabItem Header="الحاقیه‌ها"><Grid><DataGrid ItemsSource="{Binding Amendments}" IsReadOnly="True"/><controls:EmptyState Content="الحاقیه‌ای ثبت نشده است." Style="{StaticResource EmptyWhenNoRows}" DataContext="{Binding HasAmendments}"/></Grid></TabItem>
+              <TabItem Header="پرداخت‌ها"><Grid><DataGrid ItemsSource="{Binding Payments}" IsReadOnly="True"/><controls:EmptyState Content="پرداختی ثبت نشده است." Style="{StaticResource EmptyWhenNoRows}" DataContext="{Binding HasPayments}"/></Grid></TabItem>
+              <TabItem Header="دریافت‌ها"><Grid><DataGrid ItemsSource="{Binding Receipts}" IsReadOnly="True"/><controls:EmptyState Content="دریافتی ثبت نشده است." Style="{StaticResource EmptyWhenNoRows}" DataContext="{Binding HasReceipts}"/></Grid></TabItem>
+              <TabItem Header="فاکتورها"><Grid><DataGrid ItemsSource="{Binding Invoices}" IsReadOnly="True"/><controls:EmptyState Content="فاکتوری ثبت نشده است." Style="{StaticResource EmptyWhenNoRows}" DataContext="{Binding HasInvoices}"/></Grid></TabItem>
+              <TabItem Header="ضمانت‌نامه‌ها"><Grid><DataGrid ItemsSource="{Binding Guarantees}" IsReadOnly="True"/><controls:EmptyState Content="ضمانت‌نامه‌ای ثبت نشده است." Style="{StaticResource EmptyWhenNoRows}" DataContext="{Binding HasGuarantees}"/></Grid></TabItem>
+              <TabItem Header="اسناد"><Grid><DataGrid ItemsSource="{Binding Documents}" IsReadOnly="True"/><controls:EmptyState Content="سندی ثبت نشده است." Style="{StaticResource EmptyWhenNoRows}" DataContext="{Binding HasDocuments}"/></Grid></TabItem>
+              <TabItem Header="تاریخچه"><Grid><DataGrid ItemsSource="{Binding History}" IsReadOnly="True"/><controls:EmptyState Content="رویداد audit برای این قرارداد ثبت نشده است." Style="{StaticResource EmptyWhenNoRows}" DataContext="{Binding HasHistory}"/></Grid></TabItem>
+            </TabControl>
+          </DockPanel>
+        </Grid>
+      </Grid>
+    </controls:LoadingOverlay>
+  </DataTemplate>
+</ResourceDictionary>

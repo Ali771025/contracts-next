@@ -1,0 +1,20 @@
+<Application x:Class="Contracts.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Themes/DesignSystem.xaml" />
+        <ResourceDictionary Source="Themes/MasterDataViews.xaml" />
+        <ResourceDictionary Source="Themes/ContractViews.xaml" />
+        <ResourceDictionary Source="Themes/FinanceViews.xaml" />
+        <ResourceDictionary Source="Themes/OperationsViews.xaml" />
+        <ResourceDictionary Source="Themes/ReportingViews.xaml" />
+        <ResourceDictionary Source="Themes/DashboardViews.xaml" />
+        <ResourceDictionary Source="Themes/AdministrationViews.xaml" />
+        <ResourceDictionary Source="Themes/SecurityViews.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+</Application>

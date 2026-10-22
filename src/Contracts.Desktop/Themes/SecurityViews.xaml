@@ -1,0 +1,31 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:Contracts.Desktop.Security" xmlns:controls="clr-namespace:Contracts.Desktop.Controls">
+  <controls:InverseBooleanConverter x:Key="SecurityInverseBooleanConverter"/>
+  <DataTemplate DataType="{x:Type vm:RoleAdministrationViewModel}">
+    <controls:LoadingOverlay IsLoading="{Binding IsBusy}">
+      <Grid>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
+        <controls:PageHeader Header="مدیریت نقش‌ها و دسترسی‌ها" Content="ایجاد نقش، تنظیم مجوز هر بخش و انتساب نقش به کاربران؛ فقط در دسترس مدیر سیستم."/>
+        <StackPanel Grid.Row="1"><controls:ErrorBanner Content="{Binding ErrorMessage}" Visibility="{Binding HasError,Converter={StaticResource MasterDataBooleanToVisibility}}"/><TextBlock Text="{Binding Message}" Foreground="{StaticResource Brush.Success}" TextWrapping="Wrap"/></StackPanel>
+        <TabControl Grid.Row="2" Margin="0,12,0,0">
+          <TabItem Header="نقش‌ها و دسترسی‌ها">
+            <Grid Margin="12"><Grid.ColumnDefinitions><ColumnDefinition Width="330"/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+              <DockPanel Grid.Column="0"><StackPanel DockPanel.Dock="Top" Orientation="Horizontal"><Button Content="نقش جدید" Command="{Binding NewRoleCommand}"/><Button Content="بازخوانی" Command="{Binding RefreshCommand}"/></StackPanel><DataGrid ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}" IsReadOnly="True"><DataGrid.Columns><DataGridTextColumn Header="عنوان نقش" Binding="{Binding TitleFa}" Width="*"/><DataGridTextColumn Header="کد" Binding="{Binding Code}" Width="120"/><DataGridTextColumn Header="کاربر" Binding="{Binding UserCount}" Width="60"/></DataGrid.Columns></DataGrid></DockPanel>
+              <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto"><StackPanel>
+                <TextBlock Text="مشخصات نقش" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <UniformGrid Columns="2"><controls:FormField Header="کد انگلیسی پایدار"><TextBox Text="{Binding Code,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsExistingRole}" FlowDirection="LeftToRight"/></controls:FormField><controls:FormField Header="عنوان فارسی"><TextBox Text="{Binding TitleFa,UpdateSourceTrigger=PropertyChanged}"/></controls:FormField><controls:FormField Header="ترتیب نمایش"><TextBox Text="{Binding SortOrder}" FlowDirection="LeftToRight"/></controls:FormField><controls:FormField Header="وضعیت"><CheckBox Content="فعال" IsChecked="{Binding IsActive}" VerticalAlignment="Center" IsEnabled="{Binding IsSystemAdministrator,Converter={StaticResource SecurityInverseBooleanConverter}}"/></controls:FormField></UniformGrid>
+                <Button Content="ذخیره مشخصات نقش" Command="{Binding SaveRoleCommand}" HorizontalAlignment="Right"/>
+                <TextBlock Text="ماتریس دسترسی" FontSize="18" FontWeight="SemiBold" Margin="0,18,0,8"/>
+                <TextBlock Text="با فعال‌کردن افزودن، ویرایش، حذف، خروجی یا مدیریت، مجوز مشاهده نیز خودکار فعال می‌شود." Foreground="{StaticResource Brush.Muted}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                <DataGrid ItemsSource="{Binding Permissions}" IsReadOnly="{Binding CanEditPermissions,Converter={StaticResource SecurityInverseBooleanConverter}}" Height="430"><DataGrid.Columns><DataGridTextColumn Header="بخش" Binding="{Binding TitleFa}" IsReadOnly="True" Width="*"/><DataGridCheckBoxColumn Header="مشاهده" Binding="{Binding CanView}"/><DataGridCheckBoxColumn Header="افزودن" Binding="{Binding CanAdd}"/><DataGridCheckBoxColumn Header="ویرایش" Binding="{Binding CanEdit}"/><DataGridCheckBoxColumn Header="حذف" Binding="{Binding CanDelete}"/><DataGridCheckBoxColumn Header="خروجی" Binding="{Binding CanExport}"/><DataGridCheckBoxColumn Header="مدیریت" Binding="{Binding CanAdmin}"/></DataGrid.Columns></DataGrid>
+                <Button Content="ذخیره دسترسی‌ها" Command="{Binding SavePermissionsCommand}" IsEnabled="{Binding CanEditPermissions}" HorizontalAlignment="Right"/>
+              </StackPanel></ScrollViewer>
+            </Grid>
+          </TabItem>
+          <TabItem Header="انتساب نقش کاربران">
+            <Grid Margin="12"><Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions><DataGrid ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" IsReadOnly="True"><DataGrid.Columns><DataGridTextColumn Header="نام کاربری" Binding="{Binding Username}" Width="180"/><DataGridTextColumn Header="نام کامل" Binding="{Binding DisplayName}" Width="*"/><DataGridTextColumn Header="نقش فعلی" Binding="{Binding RoleTitle}" Width="220"/><DataGridCheckBoxColumn Header="فعال" Binding="{Binding IsActive}"/><DataGridCheckBoxColumn Header="تغییر رمز الزامی" Binding="{Binding MustChangePassword}"/></DataGrid.Columns></DataGrid><StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,0"><TextBlock Text="نقش جدید:" VerticalAlignment="Center"/><ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding AssignmentRole}" DisplayMemberPath="TitleFa" Width="260" Margin="8,0"/><Button Content="انتساب نقش" Command="{Binding AssignRoleCommand}"/></StackPanel></Grid>
+          </TabItem>
+        </TabControl>
+      </Grid>
+    </controls:LoadingOverlay>
+  </DataTemplate>
+</ResourceDictionary>

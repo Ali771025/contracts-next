@@ -1,0 +1,14 @@
+<Window x:Class="Contracts.Desktop.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ورود" Width="420" Height="300" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Language="fa-IR" AutomationProperties.AutomationId="LoginWindow">
+  <Grid Margin="28">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <TextBlock Text="ورود به ContractsNext" FontSize="24" FontWeight="SemiBold" Margin="0,0,0,20"/>
+    <TextBox Grid.Row="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12" Padding="8" AutomationProperties.Name="نام کاربری" AutomationProperties.AutomationId="LoginUsername"/>
+    <PasswordBox x:Name="PasswordInput" Grid.Row="2" Margin="0,0,0,12" Padding="8" AutomationProperties.Name="گذرواژه" AutomationProperties.AutomationId="LoginPassword"/>
+    <TextBlock Grid.Row="3" Text="{Binding Error}" Foreground="Firebrick" TextWrapping="Wrap" MinHeight="30"/>
+    <Button Grid.Row="4" Content="ورود" Padding="18,7" HorizontalAlignment="Left" Click="HandleLogin" AutomationProperties.AutomationId="LoginSubmit"/>
+  </Grid>
+</Window>

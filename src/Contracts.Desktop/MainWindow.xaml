@@ -1,0 +1,44 @@
+<Window x:Class="Contracts.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Contracts.Desktop.Controls"
+        xmlns:navigation="clr-namespace:Contracts.Desktop.Navigation"
+        Title="{Binding Title}" Width="1366" Height="840" MinWidth="1024" MinHeight="680"
+        WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Language="fa-IR"
+        AutomationProperties.Name="پنجره اصلی سامانه مدیریت قراردادها" AutomationProperties.AutomationId="MainWindow">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+    <DataTemplate DataType="{x:Type navigation:SectionPageViewModel}">
+      <StackPanel><controls:PageHeader Header="{Binding Title}" Content="{Binding Description}"/>
+        <controls:EmptyState Content="در این بخش هنوز رکوردی برای نمایش وجود ندارد." AutomationProperties.Name="وضعیت بدون رکورد"/>
+      </StackPanel>
+    </DataTemplate>
+  </Window.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="272"/><ColumnDefinition/></Grid.ColumnDefinitions>
+    <Grid Grid.Column="1">
+      <Grid.RowDefinitions><RowDefinition Height="72"/><RowDefinition/></Grid.RowDefinitions>
+      <Border Background="{StaticResource Brush.Surface}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,0,0,1" Padding="24,0">
+        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel VerticalAlignment="Center"><TextBlock Text="{Binding CurrentUserName}" FontWeight="SemiBold" AutomationProperties.Name="کاربر جاری"/><TextBlock Text="{Binding CurrentDate}" Foreground="{StaticResource Brush.Muted}" AutomationProperties.Name="تاریخ امروز"/></StackPanel>
+          <Button Grid.Column="1" Content="بازگشت" Command="{Binding BackCommand}" AutomationProperties.Name="بازگشت به صفحه قبل"/>
+        </Grid>
+      </Border>
+      <controls:LoadingOverlay Grid.Row="1" IsLoading="{Binding IsBusy}">
+        <Grid Margin="22"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
+          <controls:ErrorBanner Content="{Binding ErrorMessage}" Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibility}}"/>
+          <ContentControl Grid.Row="1" Content="{Binding CurrentContent}" Focusable="False"/>
+        </Grid>
+      </controls:LoadingOverlay>
+    </Grid>
+    <Border Grid.Column="0" Background="#123F49" Padding="20,16">
+      <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top" Margin="6,14,6,22"><Border Width="42" Height="42" CornerRadius="10" Background="#2A7E89" HorizontalAlignment="Right" Margin="0,0,0,10"><TextBlock Text="CN" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><TextBlock Text="ContractsNext" Foreground="White" FontSize="22" FontWeight="Bold"/><TextBlock Text="مدیریت یکپارچه قراردادها" Foreground="#BFDCE0" Margin="0,4,0,0"/></StackPanel>
+        <Button DockPanel.Dock="Bottom" Content="خروج از حساب" Command="{Binding LogoutCommand}" Style="{StaticResource SidebarButton}" AutomationProperties.Name="خروج از حساب کاربری"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False"><ItemsControl ItemsSource="{Binding MenuItems}"><ItemsControl.ItemTemplate><DataTemplate>
+          <Button Content="{Binding Title}" Command="{Binding NavigateCommand}" Style="{StaticResource SidebarButton}" Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibility}}" AutomationProperties.Name="{Binding Title}"/>
+        </DataTemplate></ItemsControl.ItemTemplate></ItemsControl></ScrollViewer>
+      </DockPanel>
+    </Border>
+  </Grid>
+</Window>

@@ -1,0 +1,51 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Contracts.Desktop.Controls"
+                    xmlns:vm="clr-namespace:Contracts.Desktop.MasterData">
+  <BooleanToVisibilityConverter x:Key="MasterDataBooleanToVisibility"/>
+  <DataTemplate DataType="{x:Type vm:PartyPageViewModel}">
+    <controls:LoadingOverlay IsLoading="{Binding IsBusy}"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
+      <controls:PageHeader Header="طرف‌های قرارداد" Content="جستجو، ثبت و ویرایش اشخاص حقیقی و حقوقی"/>
+      <controls:ErrorBanner Grid.Row="1" Content="{Binding ErrorMessage}" Margin="0,0,0,12" Visibility="{Binding HasError, Converter={StaticResource MasterDataBooleanToVisibility}}"/>
+      <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="3*"/></Grid.ColumnDefinitions>
+        <DockPanel Margin="0,0,16,0"><StackPanel DockPanel.Dock="Top" Orientation="Horizontal"><controls:SearchBox Width="250" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"/><Button Content="جستجو" Command="{Binding SearchCommand}"/><Button Content="بازکردن" Command="{Binding OpenCommand}"/></StackPanel>
+          <DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}" IsReadOnly="True"><DataGrid.Columns><DataGridTextColumn Header="نام" Binding="{Binding Name}" Width="*"/><DataGridTextColumn Header="نوع" Binding="{Binding PartyTypeTitle}" Width="140"/><DataGridTextColumn Header="همراه" Binding="{Binding Mobile}" Width="120"/></DataGrid.Columns></DataGrid></DockPanel>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"><StackPanel><StackPanel Orientation="Horizontal"><Button Content="جدید" Command="{Binding NewCommand}"/><Button Content="ذخیره" Command="{Binding SaveCommand}"/><Button Content="حذف" Command="{Binding DeleteCommand}"/><controls:RecordNavigator PreviousCommand="{Binding PreviousCommand}" NextCommand="{Binding NextCommand}"/></StackPanel>
+          <controls:FormField Header="نام"><TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="نام طرف قرارداد"/></controls:FormField>
+          <controls:FormField Header="نوع"><ComboBox ItemsSource="{Binding PartyTypes}" DisplayMemberPath="TitleFa" SelectedValuePath="Id" SelectedValue="{Binding PartyTypeId}" AutomationProperties.Name="نوع طرف قرارداد"/></controls:FormField>
+          <UniformGrid Columns="2"><controls:FormField Header="کد/شناسه ملی"><TextBox Text="{Binding NationalId}"/></controls:FormField><controls:FormField Header="کد اقتصادی"><TextBox Text="{Binding EconomicCode}"/></controls:FormField>
+            <controls:FormField Header="همراه"><TextBox Text="{Binding Mobile}"/></controls:FormField><controls:FormField Header="تلفن"><TextBox Text="{Binding Phone}"/></controls:FormField>
+            <controls:FormField Header="ایمیل"><TextBox Text="{Binding Email}"/></controls:FormField><controls:FormField Header="شخص تماس"><TextBox Text="{Binding ContactPerson}"/></controls:FormField></UniformGrid>
+          <controls:FormField Header="نشانی"><TextBox Text="{Binding Address}" AcceptsReturn="True" MinHeight="70"/></controls:FormField>
+        </StackPanel></ScrollViewer>
+      </Grid></Grid></controls:LoadingOverlay>
+  </DataTemplate>
+
+  <DataTemplate DataType="{x:Type vm:ProjectPageViewModel}">
+    <controls:LoadingOverlay IsLoading="{Binding IsBusy}"><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
+      <controls:PageHeader Header="پروژه‌ها" Content="مشخصات پروژه و بودجه‌های سالانه"/><controls:ErrorBanner Grid.Row="1" Content="{Binding ErrorMessage}" Margin="0,0,0,12" Visibility="{Binding HasError, Converter={StaticResource MasterDataBooleanToVisibility}}"/>
+      <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="3*"/></Grid.ColumnDefinitions>
+        <DockPanel Margin="0,0,16,0"><StackPanel DockPanel.Dock="Top" Orientation="Horizontal"><controls:SearchBox Width="240" Text="{Binding Search}"/><Button Content="جستجو" Command="{Binding SearchCommand}"/><Button Content="بازکردن" Command="{Binding OpenCommand}"/></StackPanel>
+          <DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}" IsReadOnly="True"><DataGrid.Columns><DataGridTextColumn Header="کد" Binding="{Binding Code}" Width="110"/><DataGridTextColumn Header="نام" Binding="{Binding Name}" Width="*"/><DataGridTextColumn Header="وضعیت" Binding="{Binding StatusTitle}" Width="120"/></DataGrid.Columns></DataGrid></DockPanel>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"><StackPanel><StackPanel Orientation="Horizontal"><Button Content="جدید" Command="{Binding NewCommand}"/><Button Content="ذخیره" Command="{Binding SaveCommand}"/><Button Content="حذف" Command="{Binding DeleteCommand}"/><controls:RecordNavigator PreviousCommand="{Binding PreviousCommand}" NextCommand="{Binding NextCommand}"/></StackPanel>
+          <UniformGrid Columns="2"><controls:FormField Header="کد پروژه"><TextBox Text="{Binding Code}"/></controls:FormField><controls:FormField Header="نام پروژه"><TextBox Text="{Binding Name}"/></controls:FormField>
+            <controls:FormField Header="کارفرما"><TextBox Text="{Binding Employer}"/></controls:FormField><controls:FormField Header="واحد"><TextBox Text="{Binding Department}"/></controls:FormField>
+            <controls:FormField Header="مدیر (شناسه کاربر)"><TextBox Text="{Binding ManagerUserId}"/></controls:FormField><controls:FormField Header="وضعیت"><ComboBox ItemsSource="{Binding Statuses}" DisplayMemberPath="TitleFa" SelectedValuePath="Id" SelectedValue="{Binding StatusId}"/></controls:FormField>
+            <controls:FormField Header="شروع شمسی"><controls:PersianDatePicker Text="{Binding StartDate}"/></controls:FormField><controls:FormField Header="پایان شمسی"><controls:PersianDatePicker Text="{Binding EndDate}"/></controls:FormField></UniformGrid>
+          <controls:FormField Header="توضیحات"><TextBox Text="{Binding Description}" AcceptsReturn="True" MinHeight="60"/></controls:FormField>
+          <TextBlock Text="بودجه پروژه" FontSize="18" FontWeight="SemiBold" Margin="0,14,0,8"/><DataGrid ItemsSource="{Binding Budgets}" SelectedItem="{Binding SelectedBudget}" IsReadOnly="True" Height="150"><DataGrid.Columns><DataGridTextColumn Header="سال" Binding="{Binding FiscalYear}"/><DataGridTextColumn Header="ارز" Binding="{Binding CurrencyCode}"/><DataGridTextColumn Header="مصوب" Binding="{Binding Approved}"/><DataGridTextColumn Header="مصرف" Binding="{Binding Consumed}"/><DataGridTextColumn Header="مانده" Binding="{Binding Remaining}"/></DataGrid.Columns></DataGrid>
+          <UniformGrid Columns="4"><controls:FormField Header="سال مالی"><TextBox Text="{Binding FiscalYear}"/></controls:FormField><controls:FormField Header="ارز"><ComboBox ItemsSource="{Binding Currencies}" DisplayMemberPath="Code" SelectedValuePath="Id" SelectedValue="{Binding BudgetCurrencyId}"/></controls:FormField><controls:FormField Header="مبلغ مصوب"><controls:MoneyField Text="{Binding ApprovedAmountMinor}"/></controls:FormField><controls:FormField Header="مبلغ مصرف"><controls:MoneyField Text="{Binding ConsumedAmountMinor}"/></controls:FormField></UniformGrid>
+          <StackPanel Orientation="Horizontal"><Button Content="ذخیره بودجه" Command="{Binding SaveBudgetCommand}"/><Button Content="حذف بودجه" Command="{Binding DeleteBudgetCommand}"/></StackPanel>
+        </StackPanel></ScrollViewer>
+      </Grid></Grid></controls:LoadingOverlay>
+  </DataTemplate>
+
+  <DataTemplate DataType="{x:Type vm:LookupAdministrationViewModel}">
+    <controls:LoadingOverlay IsLoading="{Binding IsBusy}"><StackPanel><controls:PageHeader Header="اطلاعات پایه" Content="مدیریت بانک‌ها و روش‌های پرداخت؛ فقط مدیر سیستم"/><controls:ErrorBanner Content="{Binding ErrorMessage}" Visibility="{Binding HasError, Converter={StaticResource MasterDataBooleanToVisibility}}"/>
+      <StackPanel Orientation="Horizontal"><ComboBox Width="180" ItemsSource="{Binding Kinds}" SelectedItem="{Binding Kind}"/><controls:SearchBox Width="220" Text="{Binding Search}"/><Button Content="جستجو" Command="{Binding SearchCommand}"/><Button Content="جدید" Command="{Binding NewCommand}"/></StackPanel>
+      <DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" IsReadOnly="True" Height="260"><DataGrid.Columns><DataGridTextColumn Header="کد" Binding="{Binding Code}"/><DataGridTextColumn Header="عنوان" Binding="{Binding TitleFa}" Width="*"/><DataGridTextColumn Header="ترتیب" Binding="{Binding SortOrder}"/><DataGridCheckBoxColumn Header="فعال" Binding="{Binding IsActive}"/></DataGrid.Columns></DataGrid>
+      <UniformGrid Columns="3"><controls:FormField Header="کد پایدار"><TextBox Text="{Binding Code}" IsReadOnly="{Binding IsCodeReadOnly}"/></controls:FormField><controls:FormField Header="عنوان فارسی"><TextBox Text="{Binding TitleFa}"/></controls:FormField><controls:FormField Header="ترتیب"><TextBox Text="{Binding SortOrder}"/></controls:FormField></UniformGrid>
+      <StackPanel Orientation="Horizontal"><Button Content="ذخیره" Command="{Binding SaveCommand}"/><Button Content="غیرفعال‌سازی" Command="{Binding DeactivateCommand}"/></StackPanel>
+    </StackPanel></controls:LoadingOverlay>
+  </DataTemplate>
+</ResourceDictionary>

@@ -1,0 +1,11 @@
+{
+  "solution": {
+    "path": "ContractsNext.sln",
+    "projects": [
+      "src/Contracts.Domain/Contracts.Domain.csproj",
+      "src/Contracts.Application/Contracts.Application.csproj",
+      "src/Contracts.Infrastructure/Contracts.Infrastructure.csproj",
+      "src/Contracts.Desktop/Contracts.Desktop.csproj"
+    ]
+  }
+}
